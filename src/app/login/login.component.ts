@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginModel } from '../models/login.model';
 import { LoginService } from '../services/login.service';
 
 @Component({
@@ -29,7 +30,10 @@ export class LoginComponent implements OnInit {
   }
 
   loginSignup() {
-    this.loginService.login(true).subscribe(resp=>{console.log(resp);
+    var logindata =new  LoginModel();
+    logindata.username=this.username.value;
+    logindata.password=this.password.value;
+    this.loginService.login(logindata).subscribe(resp=>{console.log(resp);
     if(resp){
       this.loginService.setLoggedInState(resp);
       this.router.navigateByUrl('/home')

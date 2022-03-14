@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
+import { LoginModel } from "../models/login.model";
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -18,9 +19,9 @@ export class LoginService {
         this.isLoggedIn.next(isLoggedIn);
     }
 
-    login(repoDetails: any): Observable<any> {
+    login(logindata: LoginModel): Observable<any> {
         return this.httpClient
-            .post(`http://localhost:5000/signup/`,{"username":"myusername"});
+            .post(`http://localhost:5000/signup/`,logindata);
     }
 
 
