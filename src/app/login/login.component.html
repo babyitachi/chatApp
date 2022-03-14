@@ -1,0 +1,25 @@
+<div style="padding: 5%;">
+    <mat-card style="min-width: 400px;">
+        <mat-card-header style="justify-content: center;">
+            <mat-card-title>{{isLogin?"Login":"Sign up"}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <span style="display: flex;flex-direction: column;">
+                <mat-form-field>
+                    <input matInput placeholder="Username" [formControl]="username" (keyup.enter)="loginSignup()"
+                        required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="password" placeholder="Password" [formControl]="password"
+                        (keyup.enter)="loginSignup()" required>
+                </mat-form-field>
+                <h5>{{isLogin?"New here?":"Already signed up?"}} <button mat-button color="warn"
+                        (click)="toggleLogin()">{{isLogin?"Sign up":"Login"}}</button> </h5>
+            </span>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-raised-button color="primary" (click)="loginSignup()"
+                [disabled]="username.errors || password.errors">{{isLogin?"Login":"Sign up"}}</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

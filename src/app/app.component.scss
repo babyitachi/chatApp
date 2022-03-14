@@ -1,0 +1,12 @@
+.toolbar-title{
+    font: 700 large Roboto;
+    justify-content: center;
+}
+.spacer {
+    flex: 1 1 auto;
+  }
+.router-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
