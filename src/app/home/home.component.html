@@ -1,12 +1,28 @@
-<span>
-    <mat-chip-list>
-        <mat-chip *ngFor="let user of activeUsers" (click)="chatWith(user)">
+<mat-accordion *ngIf="activeUsers.length!=0" multi >
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Active Users
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <span style="padding: 5%;">
+      <mat-chip-list>
+        <mat-chip *ngFor="let user of activeUsers" (click)="chatWith(user)" selected color="primary">
           <mat-chip-avatar>
-              <!-- <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" alt="Photo of a Shiba Inu"/> -->
+            <mat-icon>person</mat-icon>
           </mat-chip-avatar>
-          {{user.username}}
+          {{user}}
         </mat-chip>
-        
+
       </mat-chip-list>
-</span>
-<h1>Welcome to home!</h1>
+    </span>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        History
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
+<h1 *ngIf="activeUsers.length==0">Welcome to home!</h1>

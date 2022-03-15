@@ -6,9 +6,11 @@ import { LoginModel } from "../models/login.model";
 @Injectable({ providedIn: 'root' })
 export class LoginService {
     isLoggedIn: BehaviorSubject<boolean>;
+    username:BehaviorSubject<string>;
 
     constructor(private httpClient: HttpClient) {
         this.isLoggedIn = new BehaviorSubject<boolean>(false);
+        this.username= new BehaviorSubject<string>("");
     }
 
     getLoggedInState() {
@@ -17,6 +19,14 @@ export class LoginService {
 
     setLoggedInState(isLoggedIn) {
         this.isLoggedIn.next(isLoggedIn);
+    }
+
+    getUsername() {
+        return this.username.value;
+    }
+
+    setUsername(name) {
+        this.username.next(name);
     }
 
     login(logindata: LoginModel): Observable<any> {

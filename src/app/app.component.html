@@ -1,10 +1,11 @@
 <mat-toolbar class="toolbar-title" color="primary">
   <span style="cursor: pointer;" (click)="goHome()">
-    <mat-icon aria-hidden="false" aria-label="Example home icon">forum</mat-icon>&nbsp;
+    <mat-icon >forum</mat-icon>&nbsp;
     <span>Chat App</span>
   </span>
   <span class="spacer"></span>
-  <button mat-button (click)="login()">{{isLoggedin?"Logout":"Login/Sign up"}}</button>
+  <h5>{{username==""?"":"Hi, "}} {{username==""?"":username}}{{username==""?"":"!"}}</h5>&nbsp;
+  <button mat-flat-button [color]='isLoggedin?"warn":"primary"' (click)="login()">{{isLoggedin?"Logout":"Login/Sign up"}}</button>
 </mat-toolbar>
 <span class="router-wrapper">
   <router-outlet></router-outlet>
