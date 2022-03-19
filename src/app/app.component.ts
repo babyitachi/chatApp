@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { LoginService } from './services/login.service';
 import { SocketService } from './services/socket.service';
 import { UsersService } from './services/users.service';
@@ -9,17 +10,19 @@ import { UsersService } from './services/users.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit,OnDestroy {
   title = 'chatApp';
   isLoggedin: boolean;
   username: string;
+  usernameSub:Subscription;
+  loginSub:Subscription;
   constructor(private router: Router,
     private loginService: LoginService, private socketService: SocketService, private usersService: UsersService) {
     this.isLoggedin = false;
-    this.loginService.isLoggedIn.subscribe(state => {
+    this.loginSub= this.loginService.isLoggedIn.subscribe(state => {
       this.isLoggedin = state;
     })
-    this.loginService.username.subscribe(user => {
+    this.usernameSub=this.loginService.username.subscribe(user => {
       this.username = user;
     });
     this.username = "";
@@ -58,6 +61,15 @@ export class AppComponent implements OnInit {
       }
     } catch (e) {
       console.log(e);
+    }
+  }
+  ngOnDestroy(): void {
+    if(!this.loginSub.closed){
+      this.loginSub.unsubscribe();
+    }
+    
+    if(!this.usernameSub.closed){
+      this.usernameSub.unsubscribe();
     }
   }
 }

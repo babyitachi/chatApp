@@ -10,13 +10,15 @@ import { LandingComponent } from './landing/landing.component';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ConvoComponent } from './convo/convo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LandingComponent,
-    HomeComponent
+    HomeComponent,
+    ConvoComponent
   ],
   imports: [
     BrowserModule,

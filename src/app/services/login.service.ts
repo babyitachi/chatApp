@@ -31,6 +31,11 @@ export class LoginService {
 
     login(logindata: LoginModel): Observable<any> {
         return this.httpClient
+            .post(`http://localhost:5000/login/`,logindata);
+    }
+
+    signup(logindata: LoginModel): Observable<any> {
+        return this.httpClient
             .post(`http://localhost:5000/signup/`,logindata);
     }
 

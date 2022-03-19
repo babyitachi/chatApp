@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   password: FormControl;
 
   constructor(private router: Router, private loginService: LoginService, private socketService: SocketService) {
-    this.isLogin = false;
+    this.isLogin = true;
     this.username = new FormControl('', [Validators.required, Validators.nullValidator]);
     this.password = new FormControl('', [Validators.required, Validators.nullValidator]);
   }
@@ -35,15 +35,31 @@ export class LoginComponent implements OnInit {
       var logindata = new LoginModel();
       logindata.username = this.username.value;
       logindata.password = this.password.value;
-      this.loginService.login(logindata).subscribe(resp => {
-        console.log(resp);
-        if (resp) {
-          this.loginService.setLoggedInState(resp);
-          this.socketService.socket.emit('join', this.username.value);
-          this.loginService.setUsername(this.username.value);
-          this.router.navigateByUrl('/home')
-        }
-      });
+      if (this.isLogin) {
+        this.loginService.login(logindata).subscribe(resp => {
+          console.log(resp);
+          if (resp) {
+            this.loginService.setLoggedInState(resp);
+            this.socketService.socket.emit('join', this.username.value);
+            this.loginService.setUsername(this.username.value);
+            this.router.navigateByUrl('/home')
+          }else{
+            alert('user is not registered/incorrect password');
+          }
+        });
+      } else {
+        this.loginService.signup(logindata).subscribe(resp => {
+          console.log(resp);
+          if (resp) {
+            this.loginService.setLoggedInState(resp);
+            this.socketService.socket.emit('join', this.username.value);
+            this.loginService.setUsername(this.username.value);
+            this.router.navigateByUrl('/home')
+          }else{
+            alert('User already exists please log in')
+          }
+        });
+      }
     }
   }
 

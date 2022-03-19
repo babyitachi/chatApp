@@ -1,0 +1,21 @@
+<div style="width: 90%;padding: 5%;">
+    <span style="display: flex;flex-direction: column;">
+        <mat-toolbar color="accent">
+            <span style="cursor: pointer;">
+                <mat-icon>person</mat-icon>&nbsp;
+                <span>{{user}}</span>
+            </span>
+            <span class="spacer"></span>
+            <span style="cursor: pointer;">
+                <mat-icon>more_vert</mat-icon>&nbsp;
+            </span>
+        </mat-toolbar>
+        <span style="display: flex;flex-direction: row;">
+            <mat-form-field>
+                <input matInput placeholder="Message" required>
+            </mat-form-field>
+            <span class="spacer"></span>
+            <mat-icon>send</mat-icon>
+        </span>
+    </span>
+</div>
