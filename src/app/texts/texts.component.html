@@ -1,0 +1,6 @@
+<span style="display: flex;flex-direction: column;">
+        <div  *ngFor="let c of con"   [ngClass]="[c.my === 1 ? 'align-end' : 'align-start']">
+            <h6 class="box" [ngClass]="[c.my === 1 ? 'my-border' : 'reply-border']" 
+            style="font-size: 20px;border: 4px blueviolet solid;padding: 0 10px 0 10px;">{{c.msg}}</h6>
+        </div>
+</span>

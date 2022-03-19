@@ -10,12 +10,14 @@
                 <mat-icon>more_vert</mat-icon>&nbsp;
             </span>
         </mat-toolbar>
+        <span>
+            <app-texts></app-texts>
+        </span>
         <span style="display: flex;flex-direction: row;">
-            <mat-form-field>
+            <mat-form-field style="width: 100%;">
                 <input matInput placeholder="Message" required>
+                <mat-icon matSuffix>send</mat-icon>
             </mat-form-field>
-            <span class="spacer"></span>
-            <mat-icon>send</mat-icon>
         </span>
     </span>
 </div>

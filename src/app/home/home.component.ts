@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoginService } from '../services/login.service';
 import { SocketService } from '../services/socket.service';
+import { TypingsService } from '../services/typings.service';
 import { UsersService } from '../services/users.service';
 
 @Component({
@@ -14,15 +15,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   userSub: Subscription;
   activeUsers: any[];
-  constructor(private router: Router, private usersService: UsersService, private socketService: SocketService, private loginService: LoginService) {
+  constructor(private router: Router, private typingsService: TypingsService,
+     private usersService: UsersService, private socketService: SocketService, private loginService: LoginService) {
     this.activeUsers = [];
   }
 
   ngOnInit() {
-    this.activeUsers=this.usersService.getActiveUsers();
+    this.activeUsers = this.usersService.getActiveUsers();
     this.userSub = this.usersService.activeUsersList.subscribe(users => {
-      this.activeUsers = users;
-      this.activeUsers=users.splice(users.indexOf(this.loginService.getUsername()), 1)
+      let actu = [];
+      let username = this.loginService.getUsername().toLowerCase();
+      users.forEach(u => {
+        if (u != username) {
+        actu.push(this.typingsService.toPascleCase(u.toString()));
+        }
+      })
+      this.activeUsers = Object.assign([], actu);
     })
   }
 

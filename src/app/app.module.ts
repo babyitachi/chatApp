@@ -11,6 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ConvoComponent } from './convo/convo.component';
+import { TextsComponent } from './texts/texts.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ConvoComponent } from './convo/convo.component';
     LoginComponent,
     LandingComponent,
     HomeComponent,
-    ConvoComponent
+    ConvoComponent,
+    TextsComponent
   ],
   imports: [
     BrowserModule,

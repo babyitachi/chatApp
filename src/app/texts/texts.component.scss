@@ -1,0 +1,21 @@
+.align-start{
+    align-self: start;
+}
+
+.align-end{
+    align-self: end;
+}
+
+.my-border{
+    border-radius: 10px 0 0 10px;
+}
+
+.reply-border{
+    border-radius: 0 10px 10px 0;
+}
+
+.box{
+    overflow-wrap: break-word;
+    word-break: break-all;
+    // max-width: 60%;
+}

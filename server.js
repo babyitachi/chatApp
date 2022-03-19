@@ -1,9 +1,9 @@
-const redis = require('redis');
+const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const serviceAccount = require('./chatapp-bc8d5-ee98dbb7627f.json');
 
 const express = require('express');
 const app = express();
-
-
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http,{ cors: {origin : '*'}});
@@ -32,49 +32,59 @@ app.use(express.json());
 
 app.post('/signup',async (req,res)=>{
     console.log(req.body);
-    value=await redisclient.get(req.body.username.toString().toLowerCase())
-    if(value!=null){
+
+    const docRef = db.collection('users').doc(req.body.username.toString().toLowerCase());
+    const doc = await docRef.get();
+    if (!doc.exists) {
+        await docRef.set({
+            username: req.body.username.toString().toLowerCase(),
+            password: req.body.password.toString().toLowerCase(),
+            });
+        res.send({resp:true,msg:'Success'})
+        return;
+    } else {
         console.log('user already exist please sign in')
-        res.send(false)
+        res.send({resp:false,msg:'User already exist please sign in'})
         return;
     }
-    redisclient.set(req.body.username.toString().toLowerCase(), req.body.password.toString(), (err, reply) => {
-        if (err) throw err;
-        console.log(reply);
-    });
-    res.send(true)
+
 });
 
 app.post('/login',async (req,res)=> {
     console.log('login',req.body);
-
-    value=await redisclient.get(req.body.username.toString().toLowerCase())
-    console.log('get value:',value)
-    if (value==null){
+    const username=req.body.username.toString().toLowerCase();
+    const docRef = db.collection('users').doc(username);
+    const doc = await docRef.get();
+    if(!doc.exists){
         console.log('user is not signed up')
-        res.send(false)
+            res.send({resp:false,msg:'User is not signed up. Please Signin.'})
+            return;
+    }else{
+        if(doc.data().password==req.body.password.toString()){
+            if(clientList.indexOf(username)<0){
+                res.send({resp:true,msg:'Success'});
+                return;
+            }else{
+                res.send({resp:false,msg:'User is logged in on some other device. Log out first.'});
+                return;
+            }
+        }
     }
-    if(req.body.password.toString()==value){
-        res.send(true)
-        return;
-    }
+
     console.log('incorrect password');
-    res.send(false)
+    res.send({resp:false,msg:'Incorrect password'});
+    return;
 });
 
-const redisclient = redis.createClient({
-    url:'redis://10.17.10.17:6379'
+initializeApp({
+    credential: cert(serviceAccount)
 });
-
-redisclient.on('error', err => {
-    console.log('Error ' + err);
-});
-redisclient.connect();
-
+const db = getFirestore();
 
 io.on('connection', function(socket) {
 
     socket.on('join', function (username) {
+        username=username.toString().toLowerCase()
         console.log(`${username} joined`)
         clientList.push(username);
         clients[socket.id]={'username':username};

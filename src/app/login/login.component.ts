@@ -38,25 +38,25 @@ export class LoginComponent implements OnInit {
       if (this.isLogin) {
         this.loginService.login(logindata).subscribe(resp => {
           console.log(resp);
-          if (resp) {
-            this.loginService.setLoggedInState(resp);
+          if (resp.resp) {
+            this.loginService.setLoggedInState(resp.resp);
             this.socketService.socket.emit('join', this.username.value);
             this.loginService.setUsername(this.username.value);
             this.router.navigateByUrl('/home')
           }else{
-            alert('user is not registered/incorrect password');
+            alert(resp.msg);
           }
         });
       } else {
         this.loginService.signup(logindata).subscribe(resp => {
           console.log(resp);
-          if (resp) {
-            this.loginService.setLoggedInState(resp);
+          if (resp.resp) {
+            this.loginService.setLoggedInState(resp.resp);
             this.socketService.socket.emit('join', this.username.value);
             this.loginService.setUsername(this.username.value);
             this.router.navigateByUrl('/home')
           }else{
-            alert('User already exists please log in')
+            alert(resp.msg)
           }
         });
       }
