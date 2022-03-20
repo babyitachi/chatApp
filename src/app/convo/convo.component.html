@@ -1,4 +1,4 @@
-<div style="width: 90%;padding: 5%;">
+<div style="padding: 3em;">
     <span style="display: flex;flex-direction: column;">
         <mat-toolbar color="accent">
             <span style="cursor: pointer;">
@@ -10,13 +10,17 @@
                 <mat-icon>more_vert</mat-icon>&nbsp;
             </span>
         </mat-toolbar>
-        <span>
-            <app-texts></app-texts>
+        <span style="overflow-y: auto;max-height: 60vh;min-height: 60vh;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: end;">
+            <app-texts [message]="sendMsgTxt"></app-texts>
         </span>
         <span style="display: flex;flex-direction: row;">
             <mat-form-field style="width: 100%;">
-                <input matInput placeholder="Message" required>
-                <mat-icon matSuffix>send</mat-icon>
+                <input matInput placeholder="Message" [formControl]="msgText" (keyup.enter)="sendMsg()" required>
+                <mat-icon matSuffix (click)="sendMsg()" style="cursor: pointer;">send</mat-icon>
             </mat-form-field>
         </span>
     </span>

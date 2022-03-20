@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   userSub: Subscription;
   activeUsers: any[];
   constructor(private router: Router, private typingsService: TypingsService,
-     private usersService: UsersService, private socketService: SocketService, private loginService: LoginService) {
+    private usersService: UsersService, private socketService: SocketService, private loginService: LoginService) {
     this.activeUsers = [];
   }
 
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       let username = this.loginService.getUsername().toLowerCase();
       users.forEach(u => {
         if (u != username) {
-        actu.push(this.typingsService.toPascleCase(u.toString()));
+          actu.push(this.typingsService.toPascleCase(u.toString()));
         }
       })
       this.activeUsers = Object.assign([], actu);
