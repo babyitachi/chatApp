@@ -5,22 +5,23 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
   templateUrl: './texts.component.html',
   styleUrls: ['./texts.component.scss']
 })
-export class TextsComponent implements OnInit,OnChanges {
+export class TextsComponent implements OnInit, OnChanges {
 
   @Input()
-  message={};
+  message = [];
 
-  con=[{'my':1,'msg':'hi'},{'my':0,'msg':'hi,how are you?'},{'my':1,'msg':'good!'},{'my':0,'msg':'dfnsdn ndklns nkmkds nmds kgood!'}];
+  con = [];
+  // con=[{'my':1,'msg':'hi'},{'my':0,'msg':'hi,how are you?'},{'my':1,'msg':'good!'},{'my':0,'msg':'dfnsdn ndklns nkmkds nmds kgood!'}];
   constructor() { }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  if(changes.message && !changes.message.isFirstChange()){
-    console.log(changes);
-    this.con.push(changes.message.currentValue);
-  }    
+    if (changes.message && !changes.message.isFirstChange()) {
+      console.log(changes);
+      this.con=this.con.concat(changes.message.currentValue);
+    }
   }
 
 }

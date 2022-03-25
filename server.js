@@ -1,7 +1,26 @@
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./chatapp-bc8d5-ee98dbb7627f.json');
+const amqp=require('amqplib');
 
+const InQUEUE='messageInbox';
+const OutQUEUE='messageOutbox';
+
+
+var rabbitmqchannel,rabbitmqconnection;
+async function connectRabbit(){
+    try{
+        const amqpServerURL='amqp://localhost';
+        rabbitmqconnection = await amqp.connect(amqpServerURL);
+        rabbitmqchannel = await rabbitmqconnection.createChannel();
+        // console.log(rabbitmqchannel)
+        // console.log(rabbitmqconnection)
+        await rabbitmqchannel.assertQueue(InQUEUE);
+        await rabbitmqchannel.assertQueue(OutQUEUE);
+    }catch(err){
+        console.log('caught error: ',err)
+    }
+}
 const express = require('express');
 const app = express();
 
@@ -47,7 +66,6 @@ app.post('/signup',async (req,res)=>{
         res.send({resp:false,msg:'User already exist please sign in'})
         return;
     }
-
 });
 
 app.post('/login',async (req,res)=> {
@@ -76,6 +94,38 @@ app.post('/login',async (req,res)=> {
     return;
 });
 
+app.post('/pastusers', async (req, res) => {
+    console.log('get your past users',req.body)
+    const username = req.body.username.toString().toLowerCase();
+    const docRef = await db.collection(username).get();
+    const hist = docRef.docs;
+    var histData=[];
+    if (hist.length>0) {
+        hist.forEach(x=>{histData.push(x.id)});
+        res.send(histData);
+    } else {
+        console.log('No chat exists')
+        res.send([])
+        return;
+    }
+});
+
+app.post('/getchat', async (req,res)=>{
+    console.log(req.body);
+
+    const docRef = await db.collection(req.body.id).get();
+    const docs = docRef.docs;
+    var colData=[]
+    if (docs.length>0) {
+        docs.forEach(x=>{colData.push({time:x.id,data:x.data()})});
+        res.send(colData);
+    } else {
+        console.log('No chat exists')
+        res.send({resp:false,msg:'No chat exists'})
+        return;
+    }
+});
+
 initializeApp({
     credential: cert(serviceAccount)
 });
@@ -83,19 +133,60 @@ const db = getFirestore();
 
 io.on('connection', function(socket) {
 
-    socket.on('join', function (username) {
-        username=username.toString().toLowerCase()
-        console.log(`${username} joined`)
+    socket.on('join', async function (username) {
+        username=username.toString().toLowerCase();
+        console.log(`${username} joined`);
         clientList.push(username);
         clients[socket.id]={'username':username};
         console.log('client list join',clientList);
         socket.emit("users",clientList);
         socket.broadcast.emit("users",clientList);
+        await connectRabbit();
+        
+        rabbitmqchannel.consume(OutQUEUE,(data)=>{
+            var client = clients[socket.id];
+            if(client){
+                console.log('listen queue',data.content.toString());
+                var username=client['username'];
+                var d=JSON.parse(data.content.toString());
+                console.log('touser ',d['touser']);
+                if(d['touser']==username){
+                    console.log('usermatched');
+                    socket.emit('recievedText',d);
+                }
+            }
+        },{noAck:true});
     });
 
     socket.on('sendUpdatedClients',function(){
         socket.broadcast.emit("users",clientList);
     });
+
+    socket.on('sendText',async function(data){
+        console.log('from sendtext',data);
+        console.log(data['chatid']);
+        const p = db.collection(data['fromuser']).doc(data['touser']);
+        const pi=await p.get();
+        if(!pi.exists){
+            await p.set({chat:true})
+        }
+        const q = db.collection(data['touser']).doc(data['fromuser']);
+        const qi = await q.get();
+        if(!qi.exists){
+            await q.set({chat:true})
+        }
+
+        const docRef = db.collection(data['chatid'].toString()).doc(data['timestamp'].toString());
+        await docRef.set({
+            fromuser:  data['fromuser'],
+            toUser:  data['touser'],
+            text: data['text'],
+            state: data['state']
+            }).then(
+                await rabbitmqchannel.sendToQueue(OutQUEUE,Buffer.from(JSON.stringify(data)))
+            );
+    });
+
 
     socket.on('disconnect', function () {
        console.log('A user disconnected');
@@ -104,6 +195,8 @@ io.on('connection', function(socket) {
             var username=client['username'];
            clientList.splice(clientList.indexOf(username),1);
            delete clients[socket.id];
+           rabbitmqchannel.close();
+           rabbitmqconnection.close();
         }
         console.log('client list disconnect',clientList);
         socket.broadcast.emit("users",clientList);
@@ -116,6 +209,8 @@ io.on('connection', function(socket) {
              var username=client['username'];
             clientList.splice(clientList.indexOf(username),1);
             delete clients[socket.id];
+            rabbitmqchannel.close();
+            rabbitmqconnection.close();
          }
          console.log('client list logout',clientList);
          socket.broadcast.emit("users",clientList);

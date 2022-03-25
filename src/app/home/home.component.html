@@ -1,4 +1,4 @@
-<mat-accordion *ngIf="activeUsers.length!=0" multi >
+<mat-accordion *ngIf="activeUsers.length!=0 ||pastUsers.length!=0" multi >
   <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -17,12 +17,23 @@
       </mat-chip-list>
     </span>
   </mat-expansion-panel>
-  <mat-expansion-panel>
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         History
       </mat-panel-title>
     </mat-expansion-panel-header>
+    <span style="padding: 5%;">
+      <mat-chip-list>
+        <mat-chip *ngFor="let user of pastUsers" (click)="chatWith(user)" selected color="primary">
+          <mat-chip-avatar>
+            <mat-icon>person</mat-icon>
+          </mat-chip-avatar>
+          {{user}}
+        </mat-chip>
+
+      </mat-chip-list>
+    </span>
   </mat-expansion-panel>
 </mat-accordion>
-<h1 *ngIf="activeUsers.length==0">Welcome to home!</h1>
+<h1 *ngIf="activeUsers.length==0 && pastUsers.length==0">Welcome to home!</h1>

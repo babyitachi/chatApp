@@ -39,5 +39,10 @@ export class LoginService {
             .post(`http://localhost:5000/signup/`,logindata);
     }
 
+    getPastUsers(username:string):Observable<any>{
+        return this.httpClient
+            .post(`http://localhost:5000/pastusers/`,{'username':username});
+    }
+
 
 }

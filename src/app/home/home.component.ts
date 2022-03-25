@@ -15,13 +15,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   userSub: Subscription;
   activeUsers: any[];
+  pastUsers: any[];
   constructor(private router: Router, private typingsService: TypingsService,
     private usersService: UsersService, private socketService: SocketService, private loginService: LoginService) {
     this.activeUsers = [];
   }
 
   ngOnInit() {
+    this.loginService.getPastUsers(this.loginService.getUsername()).subscribe(users=>{
+      if(users){
+        this.usersService.setAllPastUsers(users);
+        this.pastUsers=users;
+      }
+    });
     this.activeUsers = this.usersService.getActiveUsers();
+    this.pastUsers = this.usersService.getPastUsers();
     this.userSub = this.usersService.activeUsersList.subscribe(users => {
       let actu = [];
       let username = this.loginService.getUsername().toLowerCase();
@@ -37,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   chatWith(user) {
     this.router.navigate([`/convo`, user]);
   }
+
   ngOnDestroy(): void {
     if (!this.userSub.closed) {
       this.userSub.unsubscribe();
