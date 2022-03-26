@@ -21,13 +21,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.activeUsers = [];
   }
 
-  ngOnInit() {
-    this.loginService.getPastUsers(this.loginService.getUsername()).subscribe(users=>{
-      if(users){
+  removeActiveusersFromPast() {
+    this.activeUsers.forEach(x => {
+      let xindex = this.pastUsers.indexOf(x);
+      if (xindex >= 0) {
+        this.pastUsers.splice(xindex, 1);
+      }
+    })
+  }
+  getPastUsers() {
+    this.loginService.getPastUsers(this.loginService.getUsername()).subscribe(users => {
+      if (users) {
         this.usersService.setAllPastUsers(users);
-        this.pastUsers=users;
+        this.pastUsers = users.map(x => this.typingsService.toPascleCase(x));
+        this.removeActiveusersFromPast();
       }
     });
+  }
+
+  ngOnInit() {
+
     this.activeUsers = this.usersService.getActiveUsers();
     this.pastUsers = this.usersService.getPastUsers();
     this.userSub = this.usersService.activeUsersList.subscribe(users => {
@@ -39,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       })
       this.activeUsers = Object.assign([], actu);
+      this.getPastUsers();
     })
   }
 

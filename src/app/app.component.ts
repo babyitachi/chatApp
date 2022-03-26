@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoginService } from './services/login.service';
 import { SocketService } from './services/socket.service';
+import { TypingsService } from './services/typings.service';
 import { UsersService } from './services/users.service';
 
 @Component({
@@ -17,13 +18,14 @@ export class AppComponent implements OnInit,OnDestroy {
   usernameSub:Subscription;
   loginSub:Subscription;
   constructor(private router: Router,
-    private loginService: LoginService, private socketService: SocketService, private usersService: UsersService) {
+    private loginService: LoginService, private socketService: SocketService, private usersService: UsersService,
+    private typingService:TypingsService) {
     this.isLoggedin = false;
     this.loginSub= this.loginService.isLoggedIn.subscribe(state => {
       this.isLoggedin = state;
     })
     this.usernameSub=this.loginService.username.subscribe(user => {
-      this.username = user;
+      this.username = this.typingService.toPascleCase(user);
     });
     this.username = "";
     this.socketService.socket.on('users', userslist => {
@@ -56,6 +58,7 @@ export class AppComponent implements OnInit,OnDestroy {
         //logout
         this.loginService.setLoggedInState(false);
         this.loginService.setUsername("");
+        localStorage.clear();
         this.socketService.socket.emit('logout',()=>{});
         this.router.navigateByUrl("/");
       }

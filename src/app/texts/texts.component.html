@@ -1,6 +1,15 @@
-<span style="display: flex;flex-direction: column;">
-        <div  *ngFor="let c of con" style="padding: 2px 0 0 2px;"   [ngClass]="[c.my === 1 ? 'align-end' : 'align-start']">
-            <div class="box" [ngClass]="[c.my === 1 ? 'my-border' : 'reply-border']" 
-            style="font-size: 20px;border: 2px #ff4081 solid;padding: 0 10px 0 10px;">{{c.msg}}</div>
+<span style="display: flex;flex-direction: column;background-color: lavenderblush;padding: 10px;">
+    <div *ngFor="let c of con" style="padding: 2px 0 0 2px;margin: 5px 0;background-color: white;" [ngClass]="[c.my === 1 ? 'align-end' : 'align-start']">
+        <div class="box" [ngClass]="[c.my === 1 ? 'my-border' : 'reply-border']"
+            style="font-size: 20px;border: 2px #ff4081 solid;padding: 0 10px 0 10px;box-shadow: 0 0 5px 0.1px #ff4081">
+            <span style="display: flex;flex-direction: row;align-items: baseline;color: darkslategrey;">{{c.msg}} &nbsp;<span
+                    style="font-size: 8px;">{{c.time|date:'h:mm a'}}</span>
+                    <span *ngIf="c.my==1">
+                <mat-icon class="delivery-status-icons" style="color: gray;" *ngIf="c.state==0">check</mat-icon>
+                <mat-icon class="delivery-status-icons" style="color: gray;" *ngIf="c.state==1">done_all</mat-icon>
+                <mat-icon class="delivery-status-icons" style="color: blue;" *ngIf="c.state==2">done_all</mat-icon>
+            </span>
+            </span>
         </div>
+    </div>
 </span>

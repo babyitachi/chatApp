@@ -1,7 +1,10 @@
 <div style="padding: 3em;">
     <span style="display: flex;flex-direction: column;border-radius: 15px;box-shadow: 0px 0px 15px 0.1px;padding: 5px;">
-        <mat-toolbar color="accent" style="border-radius: 15px 15px 0 0;">
-            <span style="cursor: pointer;">
+        <mat-toolbar color="accent" style="border-radius: 15px 15px 0 0;border-bottom: solid 5px white;">
+            <span style="cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            align-items: center;">
                 <mat-icon>person</mat-icon>&nbsp;
                 <span>{{user}}</span>
             </span>
@@ -11,13 +14,14 @@
             </span>
         </mat-toolbar>
         <span style="overflow-y: auto;max-height: 60vh;min-height: 60vh;
-        display: flex;
+        display: flex;background-color: lavenderblush;
         flex-direction: column;
         align-items: stretch;
         justify-content: end;">
-            <app-texts [message]="sendMsgTxt"></app-texts>
+            <app-texts style="overflow-y: auto;" #scrollMe [scrollTop]="scrollMe.scrollHeight" [message]="sendMsgTxt">
+            </app-texts>
         </span>
-        <span style="display: flex;flex-direction: row;">
+        <span style="display: flex;flex-direction: row;padding: 0 20px;">
             <mat-form-field style="width: 100%;">
                 <input matInput placeholder="Message" [formControl]="msgText" (keyup.enter)="sendMsg()" required>
                 <mat-icon matSuffix (click)="sendMsg()" style="cursor: pointer;">send</mat-icon>

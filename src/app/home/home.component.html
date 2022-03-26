@@ -7,7 +7,7 @@
     </mat-expansion-panel-header>
     <span style="padding: 5%;">
       <mat-chip-list>
-        <mat-chip *ngFor="let user of activeUsers" (click)="chatWith(user)" selected color="primary">
+        <mat-chip *ngFor="let user of activeUsers" (click)="chatWith(user)" style="background-color: green;" selected color="primary">
           <mat-chip-avatar>
             <mat-icon>person</mat-icon>
           </mat-chip-avatar>

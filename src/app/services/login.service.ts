@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
+import { environment } from "src/environments/environment";
 import { LoginModel } from "../models/login.model";
 
 @Injectable({ providedIn: 'root' })
@@ -31,17 +32,20 @@ export class LoginService {
 
     login(logindata: LoginModel): Observable<any> {
         return this.httpClient
-            .post(`http://localhost:5000/login/`,logindata);
+            .post(`${environment.serverURL}/login/`,logindata);
+            // .post(`http://localhost:5000/login/`,logindata);
     }
 
     signup(logindata: LoginModel): Observable<any> {
         return this.httpClient
-            .post(`http://localhost:5000/signup/`,logindata);
+            .post(`${environment.serverURL}/signup/`,logindata);
+            // .post(`http://localhost:5000/signup/`,logindata);
     }
 
     getPastUsers(username:string):Observable<any>{
         return this.httpClient
-            .post(`http://localhost:5000/pastusers/`,{'username':username});
+            .post(`${environment.serverURL}/pastusers/`,{'username':username});
+            // .post(`http://localhost:5000/pastusers/`,{'username':username});
     }
 
 

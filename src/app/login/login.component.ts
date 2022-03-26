@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
             this.socketService.socket.emit('join', this.username.value);
             this.loginService.setUsername(this.username.value);
             this.router.navigateByUrl('/home')
+            localStorage.setItem('username',this.username.value);
           }else{
             alert(resp.msg);
           }
@@ -55,6 +56,7 @@ export class LoginComponent implements OnInit {
             this.socketService.socket.emit('join', this.username.value);
             this.loginService.setUsername(this.username.value);
             this.router.navigateByUrl('/home')
+            localStorage.setItem('username',this.username.value);
           }else{
             alert(resp.msg)
           }
