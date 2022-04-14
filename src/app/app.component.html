@@ -8,7 +8,7 @@
   </span>
   <span class="spacer"></span>
   <h5>{{username==""?"":"Hi, "}} {{username==""?"":username}}{{username==""?"":"!"}}</h5>&nbsp;&nbsp;
-  <button mat-flat-button [color]='isLoggedin?"warn":"primary"' (click)="login()">{{isLoggedin?"Logout":"Login/Sign up"}}</button>
+  <button id="logsignin" mat-flat-button [color]='isLoggedin?"warn":"primary"' (click)="login()">{{isLoggedin?"Logout":"Login/Sign up"}}</button>
 </mat-toolbar>
 <span class="router-wrapper">
   <router-outlet></router-outlet>

@@ -1,27 +1,3 @@
-// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
-// const serviceAccount = require('./chatapp-bc8d5-ee98dbb7627f.json');
-// const amqp = require('amqplib');
-
-// const InQUEUE = 'messageInbox';
-// const OutQUEUE = 'messageOutbox';
-
-
-// var rabbitmqchannel, rabbitmqconnection;
-// async function connectRabbit() {
-//     try {
-//         const amqpServerURL = 'amqp://localhost';
-//         rabbitmqconnection = await amqp.connect(amqpServerURL);
-//         rabbitmqchannel = await rabbitmqconnection.createChannel();
-//         // console.log(rabbitmqchannel)
-//         // console.log(rabbitmqconnection)
-//         await rabbitmqchannel.assertQueue(InQUEUE);
-//         await rabbitmqchannel.assertQueue(OutQUEUE);
-//     } catch (err) {
-//         console.log('caught error: ', err)
-//     }
-// }
-
 const celeryClient = require('./celery.js');
 const firebasedb = require('./firebase-setup.js');
 
@@ -146,20 +122,6 @@ app.post('/getchat', async (req, res) => {
     }
 });
 
-// const add = celeryClient.createTask("tasks.add");
-// const sub = celeryClient.createTask("tasks.sendmessage");
-// sub.applyAsync([1, 2]);
-// const result = add.applyAsync([1, 2]);
-// result.get().then(data => {
-//     console.log(data);
-//     client.disconnect();
-// });
-
-// initializeApp({
-//     credential: cert(serviceAccount)
-// });
-// const db = getFirestore();
-
 io.on('connection', function (socket) {
 
     socket.on('join', async function (username) {
@@ -170,7 +132,6 @@ io.on('connection', function (socket) {
                 clientList.push(username);
                 clients[socket.id] = { 'username': username };
                 console.log('client list join', clientList);
-                // await connectRabbit();
 
                 const joined = celeryClient.createTask("tasks.userJoined");
                 const results = joined.applyAsync([username])
@@ -181,21 +142,6 @@ io.on('connection', function (socket) {
 
             socket.emit("users", clientList);
             socket.broadcast.emit("users", clientList);
-
-            // rabbitmqchannel.consume(OutQUEUE, (data) => {
-            //     var client = clients[socket.id];
-            //     if (client) {
-            //         console.log('listen queue', data.content.toString());
-            //         var username = client['username'];
-            //         var d = JSON.parse(data.content.toString());
-            //         console.log('touser ', d['touser']);
-            //         if (d['touser'] == username) {
-            //             console.log('usermatched');
-            //             socket.emit('recievedText', d);
-            //         }
-            //     }
-            // }, { noAck: true });
-
         } catch (e) {
             console.log('error in join', e);
         }
@@ -245,28 +191,8 @@ io.on('connection', function (socket) {
             countResults.get().then(data => {
                 console.log(data);
             });
-            // const p = firebasedb.collection(data['fromuser']).doc(data['touser']);
-            // const pi = await p.get();
-            // if (!pi.exists) {
-            //     await p.set({ chat: true })
-            // }
-            // const q = firebasedb.collection(data['touser']).doc(data['fromuser']);
-            // const qi = await q.get();
-            // if (!qi.exists) {
-            //     await q.set({ chat: true })
-            // }
-
-            // const docRef = firebasedb.collection(data['chatid'].toString()).doc(data['timestamp'].toString());
-            // await docRef.set({
-            //     fromuser: data['fromuser'],
-            //     toUser: data['touser'],
-            //     text: data['text'],
-            //     state: data['state']
-            // }).then(() => {
             socket.broadcast.emit('recievedText', data);
             console.log('broadcasted msg');
-            // await rabbitmqchannel.sendToQueue(OutQUEUE, Buffer.from(JSON.stringify(data)))
-            // });
         } catch (e) {
             console.log('error in join', e);
         }
@@ -281,8 +207,6 @@ io.on('connection', function (socket) {
                 var username = client['username'];
                 clientList.splice(clientList.indexOf(username), 1);
                 delete clients[socket.id];
-                // rabbitmqchannel.close();
-                // rabbitmqconnection.close();
             }
             console.log('client list disconnect', clientList);
             socket.broadcast.emit("users", clientList);
@@ -299,8 +223,6 @@ io.on('connection', function (socket) {
                 var username = client['username'];
                 clientList.splice(clientList.indexOf(username), 1);
                 delete clients[socket.id];
-                // rabbitmqchannel.close();
-                // rabbitmqconnection.close();
             }
             console.log('client list logout', clientList);
             socket.broadcast.emit("users", clientList);

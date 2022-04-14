@@ -18,7 +18,7 @@
             </span>
         </mat-card-content>
         <mat-card-actions align="end">
-            <button mat-raised-button color="primary" (click)="loginSignup()"
+            <button id="submit" mat-raised-button color="primary" (click)="loginSignup()"
                 [disabled]="username.errors || password.errors">{{isLogin?"Login":"Sign up"}}</button>
         </mat-card-actions>
     </mat-card>
