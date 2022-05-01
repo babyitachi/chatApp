@@ -1,31 +1,13 @@
 # ChatApp
+Main features of our web application includes signing up for a new user (ie create a unique username and password), After signing up the user can sign in into messaging app where all the online/offline users will be displayed and the user can send messages to any of online/offline users, Once the message is delivered to other user double tick shows off in message prompt of sender and Blue tick shows off when message is read by receiver, This application is easy to use with simple user interface. Our Application is inspired from “Celery from instagram” as we also use celery for reliable communication between users.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.1.
 
-## Development server
-
+# Development web server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Run Node server
-
+# Run Node server
 Run `node server.js` for node server to be up and running 
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+# Run Celery Worker
+Run `node worker.js` for node celery workers to start consuming
